@@ -1,0 +1,12 @@
+Q)What is backbone.js?
+A) Backbone.js is a JavaScript client-side (front-end) framework that helps to organize your code and makes it easier for you to develop single-page web applications. Use Backbone the JavaScript in a more organized, structured manner, where the logic (the data—model—and the presentation) are sufficiently decoupled.
+Q)Why We Need Backbone.js?
+  A) You will build JS applications considerably faster than you ever have.
+    IT supports MVC design. 
+
+Q) What is View?
+Q) What is Controller?
+Q) What is Router?
+Q) What is $el?
+
+JSON (JavaScript Object Notation) is a lightweight data-interchange format. It is easy for humans to read and write. It is easy for machines to parse and generate.

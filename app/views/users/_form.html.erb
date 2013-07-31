@@ -1,0 +1,18 @@
+<%= simple_nested_form_for @user, :input_html => { id: 'test',:multipart => true }  do |f| %>
+  
+  <%= f.input :uname, label: "User Name" %>
+
+                 <%= f.simple_fields_for :attachments do|x| %>
+                             <%= x.input :name %>
+                          <%= x.input :image, as: :file,input_html: { class: 'tes' } %>
+                        <p><%= x.link_to_remove "Remove a Document" %></p>
+                            <% end %>
+                   <p><%= f.link_to_add "Add a Document", :attachments %></p>
+   <%=f.button :submit,input_html: { class: 'special' }%>
+
+             <% end %>
+
+
+ <script type="text/javascript">
+
+</script>
