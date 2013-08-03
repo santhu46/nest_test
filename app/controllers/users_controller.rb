@@ -2,7 +2,7 @@
 Mime::Type.register "application/zip", :zip
 require 'rubygems'
 require 'zip/zip'
-
+require 'base64'
 class UsersController < ApplicationController
   # GET /users
 
@@ -44,8 +44,7 @@ class UsersController < ApplicationController
   end
 
   # POST /users
-
-  def create
+ def create
     @user = User.new(params[:user])
 
 
@@ -75,7 +74,22 @@ Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
   end
 end
 
-      send_file Rails.root+"/public/uploads"+zipfile_name, :content_type => 'application/zip'
+      send_file t.path, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
+
+#file_name = 'download_files.zip'
+ #     t = Tempfile.new("temp-filename-#{Time.now}")
+  #    Zip::ZipOutputStream.open(t.path) do |z|
+   # @user.attachments.each do |img|
+    #      file_path = File.basename(img.image.path)
+     #     z.put_next_entry(file_path)
+      #    z.print IO.read(img.image.path)
+       # end
+      #end
+     # send_file t.path, :type => 'application/zip', :x_sendfile=>true,
+      #  :disposition => 'attachment',
+       # :filename => file_name
+      #t.close
+
                        
 
       else
@@ -85,12 +99,53 @@ end
     end
   end
   # PUT /users/1
+def download_all
+          @user = User.find params[:user]
+      if !@records.blank?
+      file_name = 'download_files.zip'
+      t = Tempfile.new("temp-filename-#{Time.now}")
+      Zip::ZipOutputStream.open(t.path) do |z|
+    @user.attachments.each do |img|
+          file_path = File.basename(img.image.path)
+          z.put_next_entry(file_path)
+          z.print IO.read(img.image.path)
+        end
+      end
+      send_file t.path, :type => 'application/zip', :x_sendfile=>true,
+        :disposition => 'attachment',
+        :filename => file_name
+      t.close
+    end
+  end
+
 
   def update
     @user = User.find(params[:id])
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
+input_filenames=Array.new
+
+folder = "#{Rails.root}/public/uploads"
+
+ @user.attachments.each do |name|
+input_filenames << File.basename(name.image.path)
+
+end
+
+p input_filenames.inspect
+
+zipfile_name = "#{Rails.root}/public/uploads/"+params[:user][:uname]+".zip"
+
+Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
+ input_filenames.each do |filename|
+    # Two arguments:
+    # - The name of the file as it will appear in the archive
+    # - The original file, including the path to find it
+    zipfile.add(filename, folder + '/' + filename)
+  end
+end
+
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
       else

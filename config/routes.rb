@@ -1,5 +1,6 @@
 NestTest::Application.routes.draw do
 root :to => "users#index"
+match 'users/download_all' => "users#download_all", :as => :download
 resources :users
   # The priority is based upon order of creation:
   # first created -> highest priority.
