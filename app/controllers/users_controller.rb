@@ -76,19 +76,6 @@ end
 
       send_file zipfile_name, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
 
-#file_name = 'download_files.zip'
- #     t = Tempfile.new("temp-filename-#{Time.now}")
-  #    Zip::ZipOutputStream.open(t.path) do |z|
-   # @user.attachments.each do |img|
-    #      file_path = File.basename(img.image.path)
-     #     z.put_next_entry(file_path)
-      #    z.print IO.read(img.image.path)
-       # end
-      #end
-     # send_file t.path, :type => 'application/zip', :x_sendfile=>true,
-      #  :disposition => 'attachment',
-       # :filename => file_name
-      #t.close
 
                        
 
@@ -99,30 +86,12 @@ end
 
   end
   # PUT /users/1
-def download_all
-          @user = User.find params[:user]
-      if !@records.blank?
-      file_name = 'download_files.zip'
-      t = Tempfile.new("temp-filename-#{Time.now}")
-      Zip::ZipOutputStream.open(t.path) do |z|
-    @user.attachments.each do |img|
-          file_path = File.basename(img.image.path)
-          z.put_next_entry(file_path)
-          z.print IO.read(img.image.path)
-        end
-      end
-      send_file t.path, :type => 'application/zip', :x_sendfile=>true,
-        :disposition => 'attachment',
-        :filename => file_name
-      t.close
-    end
-  end
 
 
   def update
     @user = User.find(params[:id])
 
-    respond_to do |format|
+
       if @user.update_attributes(params[:user])
 input_filenames=Array.new
 
@@ -146,13 +115,13 @@ Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
   end
 end
 
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { head :no_content }
+      send_file zipfile_name, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
+
       else
-        format.html { render action: "edit" }
+         render action: "edit" 
 
       end
-    end
+
   end
 
   # DELETE /users/1
