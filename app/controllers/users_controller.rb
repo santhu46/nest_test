@@ -50,7 +50,7 @@ class UsersController < ApplicationController
 
 
 
-    respond_to do |format|
+
       if @user.save
 input_filenames=Array.new
 
@@ -74,7 +74,7 @@ Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
   end
 end
 
-      send_file t.path, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
+      send_file zipfile_name, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
 
 #file_name = 'download_files.zip'
  #     t = Tempfile.new("temp-filename-#{Time.now}")
@@ -93,10 +93,10 @@ end
                        
 
       else
-        format.html { render action: "new" }
+         render action: "new" 
 
       end
-    end
+
   end
   # PUT /users/1
 def download_all

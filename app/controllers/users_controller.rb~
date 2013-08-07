@@ -73,17 +73,8 @@ Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
     zipfile.add(filename, folder + '/' + filename)
   end
 end
-file_name = 'download_files.zip'
-     t = Tempfile.new("temp-filename-#{Time.now}")
-Zip::ZipOutputStream.open(t.path) do |z|
-   @user.attachments.each do |img|
-         file_path = File.basename(img.image.path)
-          z.put_next_entry(file_path)
-          z.print IO.read(img.image.path)
-        end
-      end
 
-      send_file t.path, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
+      send_file zipfile_name, :content_type => 'application/zip',:x_sendfile=>true,:disposition => 'attachment'
 
 #file_name = 'download_files.zip'
  #     t = Tempfile.new("temp-filename-#{Time.now}")
@@ -133,6 +124,28 @@ def download_all
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
+input_filenames=Array.new
+
+folder = "#{Rails.root}/public/uploads"
+
+ @user.attachments.each do |name|
+input_filenames << File.basename(name.image.path)
+
+end
+
+p input_filenames.inspect
+
+zipfile_name = "#{Rails.root}/public/uploads/"+params[:user][:uname]+".zip"
+
+Zip::ZipFile.open(zipfile_name, Zip::ZipFile::CREATE) do |zipfile|
+ input_filenames.each do |filename|
+    # Two arguments:
+    # - The name of the file as it will appear in the archive
+    # - The original file, including the path to find it
+    zipfile.add(filename, folder + '/' + filename)
+  end
+end
+
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { head :no_content }
       else
